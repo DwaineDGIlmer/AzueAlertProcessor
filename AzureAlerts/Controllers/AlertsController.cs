@@ -109,8 +109,6 @@ namespace AzureAlerts.Controllers
                 return false;
             }
 
-            _initialized = true;
-
             string conn = ConfigurationManager.AppSettings["Microsoft.ServiceBus.ConnectionString"];
             string name = ConfigurationManager.AppSettings["Microsoft.ServiceBus.Eventhub"];
 
@@ -120,7 +118,7 @@ namespace AzureAlerts.Controllers
             if ((eventHubDescription.Status == EntityStatus.Active) &&
                 (_hubClient = EventHubClient.Create(name)) != null)
             {
-                return true;
+                return _initialized = true;
             }
             Trace.WriteLine("AlertEventHandler::InitializeHubClient The hub client was not initalized");
             return false;
@@ -137,7 +135,7 @@ namespace AzureAlerts.Controllers
 
             if ((data.SerializedSizeInBytes > maxSize) || (data.SerializedSizeInBytes < minSize))
             {
-                throw new NotImplementedException("The event data size is out of bounds");
+                throw new ArgumentOutOfRangeException("The event data size is out of bounds");
             }
 
             try
